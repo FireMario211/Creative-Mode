@@ -1,3 +1,6 @@
+# 1.1.12
+- Gosh, seems as if clicking the search button twice cleared more than just search, it cleared all the items too! Fixed it!
+
 # 1.1.11
 - Fix another darn crash gosh darn retain release
 

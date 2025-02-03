@@ -222,6 +222,7 @@ CCMenuItemSpriteExtra* ObjectSelectPopup::createTabButton(std::string spriteName
 }
 
 void ObjectSelectPopup::onTab(CCObject* obj) {
+    if (obj->getTag() == m_tab) return;
     generateList(obj->getTag());
     for (CCMenuItemSpriteExtra* btn : CCArrayExt<CCMenuItemSpriteExtra*>(m_tabsMenu->getChildren())) {
         btn->setOpacity(127);
