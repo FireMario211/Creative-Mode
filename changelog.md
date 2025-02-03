@@ -1,3 +1,6 @@
+# 1.1.11
+- Fix another darn crash gosh darn retain release
+
 # 1.1.10
 - Fix the horrible bug where on Mac, the *gasp* search button was visible during playtest (Uh Oh!). Whoopsiedoodle :P
 

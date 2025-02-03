@@ -316,8 +316,10 @@ class $modify(MyEditorUI, EditorUI) {
 					for (CCNode* child : CCArrayExt<CCNode*>(buttonSprite->getChildren())) {
 						if (typeinfo_cast<CCSprite*>(child)) {
 							if (GameObject* obj = typeinfo_cast<GameObject*>(child)) {
+								obj->retain();
 								queueInMainThread([this, obj] {
 									setColorRecursive(obj);
+									obj->release();
 								});
 								continue;
 							}
