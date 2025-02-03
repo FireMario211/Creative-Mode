@@ -575,7 +575,8 @@ class $modify(MyEditorUI, EditorUI) {
 
     void toggleMode(cocos2d::CCObject* sender) {
 		EditorUI::toggleMode(sender);
-		if (m_fields->m_creativeMenu) m_fields->m_creativeMenu->setVisible(m_selectedMode == 2);
+		auto fields = m_fields.self();
+		if (fields->m_creativeMenu) fields->m_creativeMenu->setVisible(m_selectedMode == 2);
 		setLines(this);
 		setTooltipVisible(false);
 	}
@@ -583,7 +584,7 @@ class $modify(MyEditorUI, EditorUI) {
 	void showUI(bool show) {
 		EditorUI::showUI(show);
 		auto fields = m_fields.self();
-		if (m_selectedMode == 2) fields->m_creativeMenu->setVisible(show);
+		fields->m_creativeMenu->setVisible(show && m_selectedMode == 2);
 		if (Mod::get()->getSettingValue<bool>("enable-new-tab-ui")) {
 			fields->m_gradientBG->setVisible(false);
 			fields->m_newGradientBG->setVisible(show);
