@@ -1,12 +1,15 @@
+# 1.1.10
+- Fix the horrible bug where on Mac, the *gasp* search button was visible during playtest (Uh Oh!). Whoopsiedoodle :P
+
 # 1.1.9
-- Selecting objects should no longer darken them
-- Cross platform hover
+- Selecting objects should no longer darken them (see thems objects for realsies)
+- Cross platform hover! woah, this button shiny
 
 # 1.1.8
 - Fix a crash that can only happen if you have Object Groups installed and you enter the editor specifically from within the level pause menu, it works fine anywhere else tho. It's fixed now thank god, yippee!
 
 # 1.1.7
-- Fix some tooltip visibility bugs
+- Fix some tooltip visibility bugs 
 
 # 1.1.6
 - Customize Gradient Colors :3
