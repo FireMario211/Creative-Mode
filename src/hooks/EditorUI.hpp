@@ -581,6 +581,18 @@ class $modify(MyEditorUI, EditorUI) {
 		setTooltipVisible(false);
 	}
 
+	#ifdef GEODE_IS_MACOS
+	void onPlaytest(CCObject* sender) {
+		auto playbackMode = m_editorLayer->m_playbackMode;
+		EditorUI::onPlaytest(sender);
+		if (!m_isPaused && playbackMode != PlaybackMode::Playing) {
+			if (m_fields->m_creativeMenu) m_fields->m_creativeMenu->setVisible(m_selectedMode == 2);
+			setLines(this);
+			setTooltipVisible(false);
+		}
+	}
+	#endif
+
 	void showUI(bool show) {
 		EditorUI::showUI(show);
 		auto fields = m_fields.self();
