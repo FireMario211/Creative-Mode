@@ -1,3 +1,6 @@
+# 1.1.13
+- The vile vile bugs keep taking their toll on this mod's health. This time they took away tooltips if you use the original UI, that shouldn't happen anymore.
+
 # 1.1.12
 - Gosh, seems as if clicking the search button twice cleared more than just search, it cleared all the items too! Fixed it!
 

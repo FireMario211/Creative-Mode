@@ -254,7 +254,6 @@ class $modify(MyEditorUI, EditorUI) {
 	void onBarObjectButtonHover(CCObject* sender, CCPoint point, bool hovering, bool isStart) {
 		Mod* mod = Mod::get();
 		
-
 		if (isStart && hovering) {
 			
 			if (mod->getSettingValue<bool>("enable-new-tab-ui")) {
@@ -306,6 +305,8 @@ class $modify(MyEditorUI, EditorUI) {
     	Mod* mod = Mod::get();
         ret->setTag(ret->m_objectID);
 
+        static_cast<HoverEnabledCCMenuItemSpriteExtra*>(static_cast<CCMenuItemSpriteExtra*>(ret))->enableHover(std::bind(&MyEditorUI::onBarObjectButtonHover, this, _1, _2, _3, _4));
+
     	if (mod->getSettingValue<bool>("enable-new-tab-ui")) {
 			ret->m_scaleMultiplier = 1;
 			if (ButtonSprite* buttonSprite = ret->getChildByType<ButtonSprite*>(0)) {
@@ -333,8 +334,6 @@ class $modify(MyEditorUI, EditorUI) {
 				}
 
 				if (buttonSprite->getChildByID("slot-bg")) return ret;
-
-                static_cast<HoverEnabledCCMenuItemSpriteExtra*>(static_cast<CCMenuItemSpriteExtra*>(ret))->enableHover(std::bind(&MyEditorUI::onBarObjectButtonHover, this, _1, _2, _3, _4));
 				
 				CCSprite* slotSprite = CCSprite::create("rounded-slot.png"_spr);
 				CCSprite* slotOverlay = CCSprite::create("rounded-slot-overlay.png"_spr);
@@ -389,6 +388,7 @@ class $modify(MyEditorUI, EditorUI) {
 				});
 			}
 		}
+		
 		return ret;
 	}
 
