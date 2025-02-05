@@ -3,7 +3,9 @@
 #include "popups/ObjectSelectPopup.hpp"
 
 void Hover::addHoverEnabledItem(CCMenuItemSpriteExtra* item) {
-    m_hoverEnabledItems.push_back(item);
+    if(std::find(m_hoverEnabledItems.begin(), m_hoverEnabledItems.end(), item) == m_hoverEnabledItems.end()) {
+        m_hoverEnabledItems.push_back(item);
+    }
 }
 
 bool Hover::isNodeVisible(CCNode* node) {

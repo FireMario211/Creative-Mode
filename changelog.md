@@ -1,3 +1,6 @@
+# 1.1.14
+- A crash slipped through with that bug fix, urgent fix. Please no angy
+
 # 1.1.13
 - The vile vile bugs keep taking their toll on this mod's health. This time they took away tooltips if you use the original UI, that shouldn't happen anymore.
 
