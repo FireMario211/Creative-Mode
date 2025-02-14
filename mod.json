@@ -8,7 +8,7 @@
 	},
 	"id": "alphalaneous.creative_mode",
 	"name": "Creative Mode",
-	"version": "v1.1.14",
+	"version": "v1.2.0",
 	"developer": "Alphalaneous",
 	"description": "Gives the Build Tab a Minecraft Creative Mode like interface",
 	"dependencies": [
@@ -23,7 +23,8 @@
 			"resources/*.png"
 		],
 		"files": [
-			"resources/objects.csv"
+			"resources/objects.csv",
+			"resources/shaders/*"
 		]
 	},
 	"settings": {
@@ -50,6 +51,22 @@
                 "slider": true
             }
 		},
+		"blur-strength": {
+			"name": "Blur Strength",
+            "description": "The strength of the blur (0 to disable)",
+            "type": "int",
+            "default": 10,
+			"min": 0,
+            "max": 20,
+            "control": {
+                "slider": true
+            }
+		},
+		"line-color": {
+            "name": "Line Color",
+            "type": "rgb",
+            "default": [255, 255, 255]
+        },
 		"gradient-top-color": {
             "name": "Gradient Top Color",
             "type": "rgba",

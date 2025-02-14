@@ -1,3 +1,7 @@
+# 1.2.0
+- Add line color settings
+- Add Blur :3
+
 # 1.1.14
 - A crash slipped through with that bug fix, urgent fix. Please no angy
 

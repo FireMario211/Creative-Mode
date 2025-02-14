@@ -6,6 +6,7 @@
 #include "../popups/ObjectSelectPopup.hpp"
 #include "../ObjectNames.hpp"
 #include "CCMenuItemSpriteExtra.hpp"
+#include "../BoxBlurEffect.hpp"
 
 using namespace geode::prelude;
 using namespace std::placeholders;
@@ -28,12 +29,16 @@ class $modify(MyEditorUI, EditorUI) {
 		CCNode* m_gradientBG;
 		CCLayerGradient* m_newGradientBG;
 		CCLayerColor* m_darkenedBG;
+		Ref<CCLayerColor> m_cheatBG;
 		CCNode* m_lineNode;
 		CCLayerColor* m_linePart1;
 		CCLayerColor* m_linePart2;
 		CCScale9Sprite* m_tooltipBG;
 		CCLabelBMFont* m_tooltipText;
 		CCLabelBMFont* m_tooltipObjID;
+		CCSprite* m_blurSprite;
+		CCNode* m_mainNode;
+		Ref<BoxBlurEffect> m_boxBlur;
     	bool m_queueVisible = false;
 	};
 
@@ -77,17 +82,20 @@ class $modify(MyEditorUI, EditorUI) {
 		fields->m_darkenedBG->setAnchorPoint({0, 0});
 
 		fields->m_lineNode = CCNode::create();
+		ccColor3B lineColor = mod->getSettingValue<ccColor3B>("line-color");
 
 		fields->m_linePart1 = CCLayerColor::create({255, 255, 255, 255});
 		fields->m_linePart1->setContentSize({winSize.width, m_tabsMenu->getScale()});
 		fields->m_linePart1->setAnchorPoint({0, 0});
 		fields->m_linePart1->ignoreAnchorPointForPosition(false);
+		fields->m_linePart1->setColor(lineColor);
 
 		fields->m_linePart2 = CCLayerColor::create({255, 255, 255, 255});
 		fields->m_linePart2->setContentSize({winSize.width, m_tabsMenu->getScale()});
 		fields->m_linePart2->setAnchorPoint({1, 0});
 		fields->m_linePart2->setPosition({winSize.width, 0});
 		fields->m_linePart2->ignoreAnchorPointForPosition(false);
+		fields->m_linePart2->setColor(lineColor);
 
 		fields->m_lineNode->addChild(fields->m_linePart1);
 		fields->m_lineNode->addChild(fields->m_linePart2);
@@ -219,7 +227,43 @@ class $modify(MyEditorUI, EditorUI) {
 			}
 		}
 
+		queueInMainThread([this, fields, winSize, mod] {
+
+			int blurStrength = mod->getSettingValue<int>("blur-strength");
+
+			if (blurStrength > 0) {
+				if (CCNode* mainNode = m_editorLayer->getChildByID("main-node")) {
+					CCSprite* bg = static_cast<CCSprite*>(mainNode->getChildByID("background"));
+					fields->m_cheatBG = CCLayerColor::create(ccColor4B{bg->getColor().r, bg->getColor().g, bg->getColor().b, 255});
+					fields->m_cheatBG->setContentSize(winSize);
+					fields->m_cheatBG->setZOrder(-100);
+					fields->m_boxBlur = BoxBlurEffect::create(mainNode, blurStrength);
+					fields->m_boxBlur->addNodeToVisit(fields->m_cheatBG);
+					fields->m_boxBlur->addNodeToIgnore(mainNode->getChildByID("background"));
+					fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_drawGridLayer);
+					schedule(schedule_selector(MyEditorUI::checkBGColor));
+					addChild(fields->m_boxBlur->getBlurredSprite());
+					fields->m_boxBlur->getBlurredSprite()->setID("blur-sprite"_spr);
+					fields->m_boxBlur->setCrop({0, 0, winSize.width, m_toolbarHeight});
+				}
+			}
+		});
 		return true;
+	}
+
+	void checkBGColor(float dt) {
+		auto fields = m_fields.self();
+		if (CCNode* mainNode = m_editorLayer->getChildByID("main-node")) {
+			CCSprite* bg = static_cast<CCSprite*>(mainNode->getChildByID("background"));
+			CCNode* ground = mainNode->getChildByID("GJGroundLayer");
+			if (m_editorLayer->m_showGround) {
+				fields->m_cheatBG->setPositionY(ground->getPositionY());
+			}
+			else {
+				fields->m_cheatBG->setPositionY(0);
+			}
+			fields->m_cheatBG->setColor(bg->getColor());
+		}
 	}
 
 	void arrowPrevHijack(CCObject* sender) {
@@ -413,14 +457,18 @@ class $modify(MyEditorUI, EditorUI) {
 
 		float scaleFactor = 3.f;
 
+		ccColor3B lineColor = mod->getSettingValue<ccColor3B>("line-color");
+
 		outlineHalf1->setTextureRect({outlineHalf1->getContentWidth() - outlineHalf1->getContentWidth()/scaleFactor, 0, outlineHalf1->getContentWidth()/scaleFactor, outlineHalf1->getContentHeight()/scaleFactor});
 		outlineHalf1->setAnchorPoint({0, 0});
 		outlineHalf1->setPositionX(outlineHalf1->getContentWidth());
 		outlineHalf1->setOpacity(outlineOpacity);
+		outlineHalf1->setColor(lineColor);
 
 		outlineHalf2->setTextureRect({0, 0, outlineHalf2->getContentWidth()/scaleFactor, outlineHalf2->getContentHeight()/scaleFactor});
 		outlineHalf2->setAnchorPoint({0, 0});
 		outlineHalf2->setOpacity(outlineOpacity);
+		outlineHalf2->setColor(lineColor);
 
 		innerPartHalf1->setTextureRect({innerPartHalf1->getContentWidth() - innerPartHalf1->getContentWidth()/scaleFactor, 0, innerPartHalf1->getContentWidth()/scaleFactor, innerPartHalf1->getContentHeight()/scaleFactor});
 		innerPartHalf1->setOpacity(opacity);
@@ -604,6 +652,7 @@ class $modify(MyEditorUI, EditorUI) {
 			fields->m_newGradientBG->setVisible(show);
 			fields->m_lineNode->setVisible(show);
 			fields->m_darkenedBG->setVisible(show);
+			fields->m_boxBlur->getBlurredSprite()->setVisible(show);
 		}
 		setTooltipVisible(false);
 	}
