@@ -1,3 +1,6 @@
+# 1.2.1
+- Disable blur for android for now.
+
 # 1.2.0
 - Add line color settings
 - Add Blur :3

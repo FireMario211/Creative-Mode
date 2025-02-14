@@ -226,7 +226,7 @@ class $modify(MyEditorUI, EditorUI) {
 				}
 			}
 		}
-		#ifndef GEODE_IS_MACOS
+		#ifdef GEODE_IS_WINDOWS
 		queueInMainThread([this, fields, winSize, mod] {
 
 			int blurStrength = mod->getSettingValue<int>("blur-strength");

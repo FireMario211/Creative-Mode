@@ -52,6 +52,7 @@ void BoxBlurEffect::initShader() {
 }
 
 void BoxBlurEffect::applyShader(CCSprite* sprite, int direction) {
+    #ifndef GEODE_IS_MACOS
     m_program->use();
 
     m_program->setUniformLocationWith2f(
@@ -68,6 +69,7 @@ void BoxBlurEffect::applyShader(CCSprite* sprite, int direction) {
         direction
     );
     sprite->setShaderProgram(m_program);
+    #endif
 }
 
 void BoxBlurEffect::update(float dt) {

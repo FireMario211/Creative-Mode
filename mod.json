@@ -8,7 +8,7 @@
 	},
 	"id": "alphalaneous.creative_mode",
 	"name": "Creative Mode",
-	"version": "v1.2.0",
+	"version": "v1.2.1",
 	"developer": "Alphalaneous",
 	"description": "Gives the Build Tab a Minecraft Creative Mode like interface",
 	"dependencies": [
@@ -60,7 +60,8 @@
             "max": 20,
             "control": {
                 "slider": true
-            }
+            },
+			"platforms": ["win"]
 		},
 		"line-color": {
             "name": "Line Color",
