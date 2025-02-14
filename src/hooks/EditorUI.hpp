@@ -233,12 +233,12 @@ class $modify(MyEditorUI, EditorUI) {
 
 			if (blurStrength > 0) {
 				if (CCNode* mainNode = m_editorLayer->getChildByID("main-node")) {
-					fields->m_cheatBG = CCLayerColor::create(ccColor4B{m_editorLayer->m_unk1008->getColor().r, m_editorLayer->m_unk1008->getColor().g, m_editorLayer->m_unk1008->getColor().b, 255});
+					fields->m_cheatBG = CCLayerColor::create(ccColor4B{m_editorLayer->m_background->getColor().r, m_editorLayer->m_background->getColor().g, m_editorLayer->m_background->getColor().b, 255});
 					fields->m_cheatBG->setContentSize(winSize);
 					fields->m_cheatBG->setZOrder(-100);
 					fields->m_boxBlur = BoxBlurEffect::create(mainNode, blurStrength);
 					fields->m_boxBlur->addNodeToVisit(fields->m_cheatBG);
-					fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_unk1008);
+					fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_background);
 					fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_drawGridLayer);
 					schedule(schedule_selector(MyEditorUI::checkBGColor));
 					addChild(fields->m_boxBlur->getBlurredSprite());
@@ -254,14 +254,14 @@ class $modify(MyEditorUI, EditorUI) {
 
 	void checkBGColor(float dt) {
 		auto fields = m_fields.self();
-		fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_unk1008);
+		fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_background);
 		if (m_editorLayer->m_showGround) {
 			fields->m_cheatBG->setPositionY(m_editorLayer->m_groundLayer->getPositionY());
 		}
 		else {
 			fields->m_cheatBG->setPositionY(0);
 		}
-		fields->m_cheatBG->setColor(m_editorLayer->m_unk1008->getColor());
+		fields->m_cheatBG->setColor(m_editorLayer->m_background->getColor());
 	}
 
 	void arrowPrevHijack(CCObject* sender) {
