@@ -73,7 +73,6 @@ void BoxBlurEffect::applyShader(CCSprite* sprite, int direction) {
 }
 
 void BoxBlurEffect::update(float dt) {
-
     for (CCNode* node : m_nodesToIgnore) {
         node->setVisible(false);
     }
@@ -112,7 +111,9 @@ void BoxBlurEffect::setCrop(CCRect crop) {
 }
 
 void BoxBlurEffect::addNodeToIgnore(CCNode* node) {
-    m_nodesToIgnore.push_back(node);
+    if(std::find(m_nodesToIgnore.begin(), m_nodesToIgnore.end(), node) == m_nodesToIgnore.end()) {
+        m_nodesToIgnore.push_back(node);
+    }
 }
 
 void BoxBlurEffect::addNodeToVisit(CCNode* node) {

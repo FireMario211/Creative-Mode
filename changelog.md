@@ -1,3 +1,7 @@
+# 1.2.3
+- Fix more crashes
+- Fix background colors
+
 # 1.2.2
 - Fix some crashes
 

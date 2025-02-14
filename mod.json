@@ -8,7 +8,7 @@
 	},
 	"id": "alphalaneous.creative_mode",
 	"name": "Creative Mode",
-	"version": "v1.2.2",
+	"version": "v1.2.3",
 	"developer": "Alphalaneous",
 	"description": "Gives the Build Tab a Minecraft Creative Mode like interface",
 	"dependencies": [

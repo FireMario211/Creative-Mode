@@ -38,7 +38,7 @@ class $modify(MyEditorUI, EditorUI) {
 		CCLabelBMFont* m_tooltipObjID;
 		CCSprite* m_blurSprite;
 		CCNode* m_mainNode;
-		Ref<BoxBlurEffect> m_boxBlur;
+		BoxBlurEffect* m_boxBlur;
     	bool m_queueVisible = false;
 	};
 
@@ -233,18 +233,18 @@ class $modify(MyEditorUI, EditorUI) {
 
 			if (blurStrength > 0) {
 				if (CCNode* mainNode = m_editorLayer->getChildByID("main-node")) {
-					CCSprite* bg = static_cast<CCSprite*>(mainNode->getChildByID("background"));
-					fields->m_cheatBG = CCLayerColor::create(ccColor4B{bg->getColor().r, bg->getColor().g, bg->getColor().b, 255});
+					fields->m_cheatBG = CCLayerColor::create(ccColor4B{m_editorLayer->m_unk1008->getColor().r, m_editorLayer->m_unk1008->getColor().g, m_editorLayer->m_unk1008->getColor().b, 255});
 					fields->m_cheatBG->setContentSize(winSize);
 					fields->m_cheatBG->setZOrder(-100);
 					fields->m_boxBlur = BoxBlurEffect::create(mainNode, blurStrength);
 					fields->m_boxBlur->addNodeToVisit(fields->m_cheatBG);
-					fields->m_boxBlur->addNodeToIgnore(mainNode->getChildByID("background"));
+					fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_unk1008);
 					fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_drawGridLayer);
 					schedule(schedule_selector(MyEditorUI::checkBGColor));
 					addChild(fields->m_boxBlur->getBlurredSprite());
 					fields->m_boxBlur->getBlurredSprite()->setID("blur-sprite"_spr);
 					fields->m_boxBlur->setCrop({0, 0, winSize.width, m_toolbarHeight});
+					addChild(fields->m_boxBlur);
 				}
 			}
 		});
@@ -254,18 +254,14 @@ class $modify(MyEditorUI, EditorUI) {
 
 	void checkBGColor(float dt) {
 		auto fields = m_fields.self();
-		if (CCNode* mainNode = m_editorLayer->getChildByID("main-node")) {
-			if (CCSprite* bg = static_cast<CCSprite*>(mainNode->getChildByID("background"))) {
-				CCNode* ground = mainNode->getChildByID("GJGroundLayer");
-				if (ground && m_editorLayer->m_showGround) {
-					fields->m_cheatBG->setPositionY(ground->getPositionY());
-				}
-				else {
-					fields->m_cheatBG->setPositionY(0);
-				}
-				fields->m_cheatBG->setColor(bg->getColor());
-			}
+		fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_unk1008);
+		if (m_editorLayer->m_showGround) {
+			fields->m_cheatBG->setPositionY(m_editorLayer->m_groundLayer->getPositionY());
 		}
+		else {
+			fields->m_cheatBG->setPositionY(0);
+		}
+		fields->m_cheatBG->setColor(m_editorLayer->m_unk1008->getColor());
 	}
 
 	void arrowPrevHijack(CCObject* sender) {
