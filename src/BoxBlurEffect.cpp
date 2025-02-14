@@ -81,6 +81,7 @@ void BoxBlurEffect::update(float dt) {
     for (CCNode* node : m_nodesToVisit) {
         node->visit();
     }
+    if (!m_target) return;
     m_target->visit();
     m_blurredHorizSprite->render.end();
     

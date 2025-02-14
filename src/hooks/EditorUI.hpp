@@ -255,15 +255,16 @@ class $modify(MyEditorUI, EditorUI) {
 	void checkBGColor(float dt) {
 		auto fields = m_fields.self();
 		if (CCNode* mainNode = m_editorLayer->getChildByID("main-node")) {
-			CCSprite* bg = static_cast<CCSprite*>(mainNode->getChildByID("background"));
-			CCNode* ground = mainNode->getChildByID("GJGroundLayer");
-			if (m_editorLayer->m_showGround) {
-				fields->m_cheatBG->setPositionY(ground->getPositionY());
+			if (CCSprite* bg = static_cast<CCSprite*>(mainNode->getChildByID("background"))) {
+				CCNode* ground = mainNode->getChildByID("GJGroundLayer");
+				if (ground && m_editorLayer->m_showGround) {
+					fields->m_cheatBG->setPositionY(ground->getPositionY());
+				}
+				else {
+					fields->m_cheatBG->setPositionY(0);
+				}
+				fields->m_cheatBG->setColor(bg->getColor());
 			}
-			else {
-				fields->m_cheatBG->setPositionY(0);
-			}
-			fields->m_cheatBG->setColor(bg->getColor());
 		}
 	}
 

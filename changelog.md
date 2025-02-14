@@ -1,3 +1,6 @@
+# 1.2.2
+- Fix some crashes
+
 # 1.2.1
 - Disable blur for android for now.
 
