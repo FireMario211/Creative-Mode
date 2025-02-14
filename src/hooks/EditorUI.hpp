@@ -653,7 +653,7 @@ class $modify(MyEditorUI, EditorUI) {
 			fields->m_newGradientBG->setVisible(show);
 			fields->m_lineNode->setVisible(show);
 			fields->m_darkenedBG->setVisible(show);
-			fields->m_boxBlur->getBlurredSprite()->setVisible(show);
+			if (fields->m_boxBlur) fields->m_boxBlur->getBlurredSprite()->setVisible(show);
 		}
 		setTooltipVisible(false);
 	}
