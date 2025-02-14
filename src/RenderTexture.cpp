@@ -32,7 +32,7 @@ RenderTexture::RenderTexture(unsigned int width, unsigned int height, GLint text
 		static_cast<GLsizei>(m_width),
 		static_cast<GLsizei>(m_height)
 	);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_depthStencil);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, 0x821A, GL_RENDERBUFFER, m_depthStencil);
 
 	// attach texture to framebuffer
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture, 0);
@@ -113,23 +113,23 @@ std::unique_ptr<uint8_t[]> RenderTexture::captureData(CCNode* node, PixelFormat 
 
 std::unique_ptr<uint8_t[]> RenderTexture::readDataFromTexture(PixelFormat format) {
 	int perPixel = 4;
-	int glFormat = GL_RGBA;
+	int glFormat = 0x1908;
 	switch (format) {
 		case PixelFormat::BGR:
 			perPixel = 3;
-			glFormat = GL_BGR;
+			glFormat = 0x80E0;
 			break;
 		case PixelFormat::RGB:
 			perPixel = 3;
-			glFormat = GL_RGB;
+			glFormat = 0x1907;
 			break;
 		case PixelFormat::BGRA:
 			perPixel = 4;
-			glFormat = GL_BGRA;
+			glFormat = 0x80E1;
 			break;
 		case PixelFormat::RGBA:
 			perPixel = 4;
-			glFormat = GL_RGBA;
+			glFormat = 0x1908;
 			break;
 	}
 
