@@ -5,9 +5,9 @@
 
 using namespace geode::prelude;
 
-class BoxBlurEffect : public CCNode {
+class BlurNode : public CCNode {
 public:
-    static BoxBlurEffect* create(CCNode* target, float radius);
+    static BlurNode* create(CCNode* target, float radius);
     CCSprite* getBlurredSprite();
     virtual void update(float dt) override;
     void addNodeToIgnore(CCNode* node);
@@ -27,6 +27,8 @@ private:
     std::vector<Ref<CCNode>> m_nodesToIgnore;
     std::vector<Ref<CCNode>> m_nodesToVisit;
     CCRect m_crop;
+    CCSize m_distOffsetsVert[9];
+    CCSize m_distOffsetsHorz[9];
 
     void initShader();
     void applyShader(CCSprite* sprite, int direction);

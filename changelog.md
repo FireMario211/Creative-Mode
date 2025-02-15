@@ -1,3 +1,6 @@
+# 1.2.4
+- Blur optimizations and improvements
+
 # 1.2.3
 - Fix more crashes
 - Fix background colors

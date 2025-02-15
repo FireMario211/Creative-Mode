@@ -6,7 +6,7 @@
 #include "../popups/ObjectSelectPopup.hpp"
 #include "../ObjectNames.hpp"
 #include "CCMenuItemSpriteExtra.hpp"
-#include "../BoxBlurEffect.hpp"
+#include "../BlurNode.hpp"
 
 using namespace geode::prelude;
 using namespace std::placeholders;
@@ -38,7 +38,7 @@ class $modify(MyEditorUI, EditorUI) {
 		CCLabelBMFont* m_tooltipObjID;
 		CCSprite* m_blurSprite;
 		CCNode* m_mainNode;
-		BoxBlurEffect* m_boxBlur;
+		BlurNode* m_blur;
     	bool m_queueVisible = false;
 	};
 
@@ -236,15 +236,15 @@ class $modify(MyEditorUI, EditorUI) {
 					fields->m_cheatBG = CCLayerColor::create(ccColor4B{m_editorLayer->m_background->getColor().r, m_editorLayer->m_background->getColor().g, m_editorLayer->m_background->getColor().b, 255});
 					fields->m_cheatBG->setContentSize(winSize);
 					fields->m_cheatBG->setZOrder(-100);
-					fields->m_boxBlur = BoxBlurEffect::create(mainNode, blurStrength);
-					fields->m_boxBlur->addNodeToVisit(fields->m_cheatBG);
-					fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_background);
-					fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_drawGridLayer);
+					fields->m_blur = BlurNode::create(mainNode, blurStrength);
+					fields->m_blur->addNodeToVisit(fields->m_cheatBG);
+					fields->m_blur->addNodeToIgnore(m_editorLayer->m_background);
+					fields->m_blur->addNodeToIgnore(m_editorLayer->m_drawGridLayer);
 					schedule(schedule_selector(MyEditorUI::checkBGColor));
-					addChild(fields->m_boxBlur->getBlurredSprite());
-					fields->m_boxBlur->getBlurredSprite()->setID("blur-sprite"_spr);
-					fields->m_boxBlur->setCrop({0, 0, winSize.width, m_toolbarHeight});
-					addChild(fields->m_boxBlur);
+					addChild(fields->m_blur->getBlurredSprite());
+					fields->m_blur->getBlurredSprite()->setID("blur-sprite"_spr);
+					fields->m_blur->setCrop({0, 0, winSize.width, m_toolbarHeight});
+					addChild(fields->m_blur);
 				}
 			}
 		});
@@ -254,7 +254,7 @@ class $modify(MyEditorUI, EditorUI) {
 
 	void checkBGColor(float dt) {
 		auto fields = m_fields.self();
-		fields->m_boxBlur->addNodeToIgnore(m_editorLayer->m_background);
+		fields->m_blur->addNodeToIgnore(m_editorLayer->m_background);
 		if (m_editorLayer->m_showGround) {
 			fields->m_cheatBG->setPositionY(m_editorLayer->m_groundLayer->getPositionY());
 		}
@@ -650,7 +650,7 @@ class $modify(MyEditorUI, EditorUI) {
 			fields->m_newGradientBG->setVisible(show);
 			fields->m_lineNode->setVisible(show);
 			fields->m_darkenedBG->setVisible(show);
-			if (fields->m_boxBlur) fields->m_boxBlur->getBlurredSprite()->setVisible(show);
+			if (fields->m_blur) fields->m_blur->getBlurredSprite()->setVisible(show);
 		}
 		setTooltipVisible(false);
 	}
