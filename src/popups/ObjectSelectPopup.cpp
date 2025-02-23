@@ -276,7 +276,6 @@ void ObjectSelectPopup::generateList(int tab, std::string query, bool reset){
             }
         }
         m_searchBar->setVisible(true);
-        m_searchInput->focus();
         if (!query.empty()) {
 
 		    std::vector<NameData> nameScores{};
@@ -319,6 +318,9 @@ void ObjectSelectPopup::generateList(int tab, std::string query, bool reset){
         }
         heightOffset = 30 * ObjectSelectPopup::s_scaleMult;
         rowOffset = 1;
+        m_searchInput->focus();
+        m_searchInput->getInputNode()->m_textField->m_uCursorPos = m_searchInput->getString().size();
+        m_searchInput->getInputNode()->updateBlinkLabelToChar(m_searchInput->getInputNode()->m_textField->m_uCursorPos);
     }
     else {
         m_searchButtons.clear();

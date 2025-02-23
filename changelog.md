@@ -1,3 +1,6 @@
+# 1.2.6
+- Fix text focusing at start rather than end
+
 # 1.2.5
 - Selector color option
 - Typo fixes
