@@ -384,7 +384,9 @@ class $modify(MyEditorUI, EditorUI) {
 				slotOverlay->setZOrder(10);
 				slotOverlay->setVisible(false);
 				slotOverlay->setID("slot-overlay");
-				slotOverlay->setColor({255, 255, 0});
+
+				ccColor3B overlayColor = mod->getSettingValue<ccColor3B>("selection-color");
+				slotOverlay->setColor(overlayColor);
 
 				CCSprite* highlight = CCSprite::create("rounded-slot-highlight.png"_spr);
 				highlight->setVisible(false);
@@ -825,6 +827,7 @@ class $modify(MyEditorUI, EditorUI) {
 	}
 
 	HoverEnabledCCMenuItemSpriteExtra* createObjectButton(int id, int tab, MyEditorUI::Fields* fields) {
+		Mod* mod = Mod::get();
 		CCNode* objectContainer = CCNode::create();
 		CCSprite* slotSprite = CCSprite::create("rounded-slot.png"_spr);
 		CCSprite* slotOverlay = CCSprite::create("rounded-slot-overlay.png"_spr);
@@ -832,7 +835,9 @@ class $modify(MyEditorUI, EditorUI) {
 		slotOverlay->setZOrder(10);
 		slotOverlay->setVisible(false);
 		slotOverlay->setID("slot-overlay");
-		slotOverlay->setColor({255, 255, 0});
+		
+		ccColor3B overlayColor = mod->getSettingValue<ccColor3B>("selection-color");
+		slotOverlay->setColor(overlayColor);
 
 		CCSprite* highlight = CCSprite::create("rounded-slot-highlight.png"_spr);
 		highlight->setVisible(false);

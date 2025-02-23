@@ -5,7 +5,6 @@
 #include "CCMenuItemSpriteExtra.hpp"
 
 using namespace geode::prelude;
-using namespace std::placeholders;
 
 class $modify(MyEditButtonBar, EditButtonBar) {
 

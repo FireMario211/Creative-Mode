@@ -75,6 +75,7 @@ bool ObjectSelectPopup::init(EditorUI* editorUI){
     m_searchInput->setPositionX(m_searchInput->getPositionX() - 18);
     m_searchInput->setCallback([this] (std::string str) {
         Mod::get()->setSavedValue("search-query", str);
+        setTooltipVisible(false);
         generateList(-2, str, true);
     });
     m_mainLayer->addChildAtPosition(
@@ -275,6 +276,7 @@ void ObjectSelectPopup::generateList(int tab, std::string query, bool reset){
             }
         }
         m_searchBar->setVisible(true);
+        m_searchInput->focus();
         if (!query.empty()) {
 
 		    std::vector<NameData> nameScores{};
@@ -459,6 +461,7 @@ void ObjectSelectPopup::onClose(cocos2d::CCObject*){
     this->setKeypadEnabled(false);
     this->setTouchEnabled(false);
     this->removeFromParentAndCleanup(true);
+    static_cast<MyEditorUI*>(m_editorUI)->m_fields->m_objectSelectPopup = nullptr;
 }
 
 ObjectSelectPopup* ObjectSelectPopup::create(EditorUI* editorUI) {

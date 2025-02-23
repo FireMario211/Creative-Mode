@@ -1,3 +1,8 @@
+# 1.2.5
+- Selector color option
+- Typo fixes
+- Focus into search when search tab is opened
+
 # 1.2.4
 - Blur optimizations and improvements
 
