@@ -305,11 +305,19 @@ class $modify(MyEditorUI, EditorUI) {
 			}
 
 			std::string name;
+			bool isGroup = false;
 			if (sender->getTag() < 0) {
 				name = "Custom Object";
 			}
 			else if (sender->getTag() > 0) {
 				name = ObjectNames::get()->nameForID(sender->getTag());
+			} 
+			else { // check for group name object
+				if (auto gnObj = static_cast<CCNode*>(sender)->getUserObject("razoom.object_groups/OG-name")) {
+					name = static_cast<CCString*>(gnObj)->m_sString;
+					if (name.empty()) name = "Unnamed";
+					isGroup = true;
+				}
 			}
 			
 			if (mod->getSettingValue<bool>("enable-tooltips")) {
@@ -319,7 +327,7 @@ class $modify(MyEditorUI, EditorUI) {
 						isObjectGroup = parent2->getID() == "RaZooM";
 					}
 				}
-				setTooltipText(name, sender->getTag());
+				setTooltipText(name, sender->getTag(), isGroup);
 				if (!isObjectGroup) {
 					setTooltipVisible(true);
 				}
@@ -423,7 +431,11 @@ class $modify(MyEditorUI, EditorUI) {
 				buttonSprite->retain();
 				persistentHighlight->retain();
 				queueInMainThread([ret, buttonSprite, persistentHighlight] {
-					if (typeinfo_cast<GroupInfo*>(ret->getUserObject())) {
+					if (ret->getUserObject("razoom.object_groups/OG-name")) {
+						// group marker since Object Groups v2
+						buttonSprite->addChild(persistentHighlight);
+					} else if (typeinfo_cast<GroupInfo*>(ret->getUserObject())) {
+						// compat with Object Groups < v2
 						buttonSprite->addChild(persistentHighlight);
 					}
 					ret->release();
@@ -570,21 +582,25 @@ class $modify(MyEditorUI, EditorUI) {
 		setTooltipVisible(false);
 	}
 
-	void setTooltipText(std::string text, int id) {
+	void setTooltipText(std::string text, int id, bool isGroup=false) {
 		auto fields = m_fields.self();
 		if (fields->m_tooltipText) {
-			if (id == 0) {
-				fields->m_tooltipText->setString("");
-				return;
+			if (!isGroup) {
+				if (id == 0) {
+					fields->m_tooltipText->setString("");
+					return;
+				}
+				id = std::abs(id);
+				fields->m_tooltipText->setString(text.c_str());
+				fields->m_tooltipObjID->setString(fmt::format("(#{})", id).c_str());
+			} else {
+				fields->m_tooltipText->setString(text.c_str());
+				fields->m_tooltipObjID->setString("(group)");
 			}
-			fields->m_tooltipText->setString(text.c_str());
-			id = std::abs(id);
-			fields->m_tooltipText->setString(text.c_str());
-			fields->m_tooltipObjID->setString(fmt::format("(#{})", id).c_str());
 
 			float scaleFactor = 4.f;
 
-			fields->m_tooltip->setContentSize({fields->m_tooltipText->getScaledContentSize().width + 10, fields->m_tooltipText->getScaledContentSize().height + fields->m_tooltipObjID->getScaledContentSize().height + 5});
+			fields->m_tooltip->setContentSize({std::max(fields->m_tooltipText->getScaledContentSize().width, fields->m_tooltipObjID->getScaledContentSize().width) + 10, fields->m_tooltipText->getScaledContentSize().height + fields->m_tooltipObjID->getScaledContentSize().height + 5});
 			fields->m_tooltipBG->setContentSize(fields->m_tooltip->getContentSize() * scaleFactor);
 			fields->m_tooltipBG->setScale(1 / scaleFactor);
 
