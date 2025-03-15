@@ -1,5 +1,5 @@
 {
-	"geode": "4.2.0",
+	"geode": "4.3.0",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -8,13 +8,18 @@
 	},
 	"id": "alphalaneous.creative_mode",
 	"name": "Creative Mode",
-	"version": "v1.2.6",
+	"version": "v1.2.7",
 	"developer": "Alphalaneous",
-	"description": "Gives the Build Tab a Minecraft Creative Mode like interface",
+	"description": "Gives the Build Tab a cool new interface",
 	"dependencies": [
 		{
             "id": "geode.node-ids",
             "version": ">=v1.13.2",
+            "importance": "required"
+        },
+		{
+            "id": "alphalaneous.object_popup_api",
+            "version": ">=v1.0.0",
             "importance": "required"
         }
     ],
@@ -23,7 +28,6 @@
 			"resources/*.png"
 		],
 		"files": [
-			"resources/objects.csv",
 			"resources/shaders/*"
 		]
 	},

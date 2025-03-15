@@ -2,9 +2,8 @@
 
 #include <Geode/Geode.hpp>
 #include <Geode/modify/EditorUI.hpp>
-#include "EditButtonBar.hpp"
-#include "../popups/ObjectSelectPopup.hpp"
-#include "../ObjectNames.hpp"
+#include <alphalaneous.object_popup_api/include/ObjectSelectPopup.hpp>
+#include <alphalaneous.object_popup_api/include/ObjectNames.hpp>
 #include "CCMenuItemSpriteExtra.hpp"
 #include "../BlurNode.hpp"
 
@@ -21,10 +20,7 @@ class $modify(MyEditorUI, EditorUI) {
     }
 
 	struct Fields {
-		std::map<int, Ref<GameObject>> m_gameObjects{};
-		std::unordered_map<int, std::vector<std::pair<int, Ref<GameObject>>>> m_tabObjects{};
 		CCMenu* m_creativeMenu;
-		ObjectSelectPopup* m_objectSelectPopup = nullptr;
 		CCNode* m_tooltip;
 		CCNode* m_gradientBG;
 		CCLayerGradient* m_newGradientBG;
@@ -217,15 +213,6 @@ class $modify(MyEditorUI, EditorUI) {
 			changeBG(m_tabsMenu->getChildByTag(m_selectedTab), mod->getSettingValue<ccColor4B>("gradient-top-color").a, 255, 255 * mod->getSettingValue<float>("gradient-overlay-opacity"));
 		}
 
-		for (MyEditButtonBar* buttonBar : CCArrayExt<MyEditButtonBar*>(m_createButtonBars)) {
-			int tab = buttonBar->m_tabIndex;
-			if (tab <= -1 || tab >= 13) continue;
-			if (!fields->m_tabObjects.contains(tab)) {
-				for (int id : buttonBar->m_fields->m_objectIDs) {
-					fields->m_tabObjects[tab].push_back({id, createGameObject(id, fields)});
-				}
-			}
-		}
 		#ifdef GEODE_IS_WINDOWS
 		queueInMainThread([this, fields, winSize, mod] {
 
@@ -675,9 +662,20 @@ class $modify(MyEditorUI, EditorUI) {
 
 	void onCreativeMenu(CCObject* sender) {
 		auto fields = m_fields.self();
+		auto mod = Mod::get();
 
-		fields->m_objectSelectPopup = ObjectSelectPopup::create(this);
-		fields->m_objectSelectPopup->show();
+		ObjectSelectPopup* popup = ObjectSelectPopup::create(this, "Objects");
+		popup->setSelectCallback([this] (CCMenuItem* btn, int id, bool selected) {
+			onCreateButton(btn);
+			m_selectedObjectIndex = id;
+			updateCreateMenu(true);
+		});
+		ccColor3B overlayColor = mod->getSettingValue<ccColor3B>("selection-color");
+		float tooltipScale = mod->getSettingValue<float>("tooltip-scale");
+		popup->setOverlayColor(overlayColor);
+		popup->setTooltipScale(tooltipScale);
+		popup->selectObject(m_selectedObjectIndex);
+		popup->show();
 	}
 
 	void updateCreateMenu(bool p0) {
@@ -737,26 +735,6 @@ class $modify(MyEditorUI, EditorUI) {
 		}
 	}
 
-	void onObjectButton(CCObject* sender) {
-		auto fields = m_fields.self();
-		int id = sender->getTag();
-
-		HoverEnabledCCMenuItemSpriteExtra* btn = static_cast<HoverEnabledCCMenuItemSpriteExtra*>(sender);
-		CCSprite* overlay = static_cast<CCSprite*>(btn->getChildByID("slot-overlay"));
-		onCreateButton(sender);
-
-		m_selectedObjectIndex = id;
-		selectBuildTab(static_cast<CCInteger*>(btn->getUserObject("tab"_spr))->getValue());
-		updateCreateMenu(true);
-
-		for (CCMenuItem* btn : fields->m_objectSelectPopup->m_buttons) {
-			CCSprite* overlay2 = static_cast<CCSprite*>(btn->getChildByID("slot-overlay"));
-			overlay2->setVisible(btn->getTag() == id);
-		}
-		
-		overlay->setVisible(true);
-	}
-
 	void onSearchHover(CCObject* sender, CCPoint point, bool hovering, bool isStart) {
 		HoverEnabledCCMenuItemSpriteExtra* btn = static_cast<HoverEnabledCCMenuItemSpriteExtra*>(sender);
 		if (isStart && hovering) {
@@ -799,94 +777,5 @@ class $modify(MyEditorUI, EditorUI) {
 				}
 			}
 		}
-	}
-
-	void onObjectButtonHover(CCObject* sender, CCPoint point, bool hovering, bool isStart) {
-		HoverEnabledCCMenuItemSpriteExtra* btn = static_cast<HoverEnabledCCMenuItemSpriteExtra*>(sender);
-		auto fields = m_fields.self();
-
-		if (isStart && hovering) {
-			std::string name;
-			if (btn->getTag() < 0) {
-				name = "Custom Object";
-			}
-			else if (btn->getTag() > 0) {
-				name = ObjectNames::get()->nameForID(btn->getTag());
-			}
-			fields->m_objectSelectPopup->setTooltipText(name, btn->getTag());
-			fields->m_objectSelectPopup->setTooltipVisible(true);
-			btn->getChildByID("highlight")->setVisible(true);
-		}
-		if (isStart && !hovering) {
-			fields->m_objectSelectPopup->setTooltipVisible(false);
-			btn->getChildByID("highlight")->setVisible(false);
-		}
-
-		if (hovering) {
-			fields->m_objectSelectPopup->setTooltipPosition(point);
-		}
-	}
-
-	GameObject* createGameObject(int id, MyEditorUI::Fields* fields) {
-		if (id == 0) return nullptr;
-		if (fields->m_gameObjects.contains(id)) {
-			return fields->m_gameObjects[id];
-		}
-		else {
-			CreateMenuItem* cmi = getCreateBtn(id, 0);
-			ButtonSprite* buttonSprite = cmi->getChildByType<ButtonSprite*>(0);
-			GameObject* obj = buttonSprite->getChildByType<GameObject*>(0);
-			fields->m_gameObjects[id] = obj;
-			return obj;
-		}
-		return nullptr;
-	}
-
-	HoverEnabledCCMenuItemSpriteExtra* createObjectButton(int id, int tab, MyEditorUI::Fields* fields) {
-		Mod* mod = Mod::get();
-		CCNode* objectContainer = CCNode::create();
-		CCSprite* slotSprite = CCSprite::create("rounded-slot.png"_spr);
-		CCSprite* slotOverlay = CCSprite::create("rounded-slot-overlay.png"_spr);
-		slotSprite->setZOrder(-10);
-		slotOverlay->setZOrder(10);
-		slotOverlay->setVisible(false);
-		slotOverlay->setID("slot-overlay");
-		
-		ccColor3B overlayColor = mod->getSettingValue<ccColor3B>("selection-color");
-		slotOverlay->setColor(overlayColor);
-
-		CCSprite* highlight = CCSprite::create("rounded-slot-highlight.png"_spr);
-		highlight->setVisible(false);
-		highlight->setID("highlight");
-		highlight->setZOrder(-11);
-		highlight->setOpacity(127);
-
-		objectContainer->setAnchorPoint({1, 0.5});
-		objectContainer->setScale(ObjectSelectPopup::s_scaleMult * 0.7);
-		if (GameObject* obj = createGameObject(id, fields)) {
-			objectContainer->addChild(obj);
-		}
-
-		objectContainer->setContentSize({40, 40});
-		CCMenuItemSpriteExtra* btn = CCMenuItemSpriteExtra::create(objectContainer, this, menu_selector(MyEditorUI::onObjectButton));
-		HoverEnabledCCMenuItemSpriteExtra* hoverBtn = static_cast<HoverEnabledCCMenuItemSpriteExtra*>(btn);
-		hoverBtn->enableHover(std::bind(&MyEditorUI::onObjectButtonHover, this, _1, _2, _3, _4));
-		objectContainer->setPosition({objectContainer->getPositionX() + 2.75f * objectContainer->getScale(), objectContainer->getPositionY() + 1 * objectContainer->getScale()});
-        btn->m_scaleMultiplier = 1;
-		btn->addChild(slotSprite);
-		btn->addChild(slotOverlay);
-		btn->addChild(highlight);
-		btn->setContentSize({25.6, 25.6});
-
-		btn->setTag(id);
-		btn->setUserObject("tab"_spr, CCInteger::create(tab));
-		slotSprite->setPosition(btn->getContentSize()/2);
-		slotSprite->setScale(btn->getContentSize().width / slotSprite->getContentSize().width);
-		slotOverlay->setPosition(btn->getContentSize()/2);
-		slotOverlay->setScale(btn->getContentSize().width / slotSprite->getContentSize().width);
-		highlight->setPosition(btn->getContentSize()/2);
-		highlight->setScale(btn->getContentSize().width / slotSprite->getContentSize().width);
-
-		return hoverBtn;
 	}
 };

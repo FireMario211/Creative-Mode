@@ -1,3 +1,7 @@
+# 1.2.7
+- Use Object Popup API
+- Better Object Groups Compatibility
+
 # 1.2.6
 - Fix text focusing at start rather than end
 

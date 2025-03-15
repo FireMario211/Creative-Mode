@@ -1,6 +1,6 @@
 #include "Hover.hpp"
 #include "hooks/CCMenuItemSpriteExtra.hpp"
-#include "popups/ObjectSelectPopup.hpp"
+#include <alphalaneous.object_popup_api/include/ObjectSelectPopup.hpp>
 
 void Hover::addHoverEnabledItem(CCMenuItemSpriteExtra* item) {
     if(std::find(m_hoverEnabledItems.begin(), m_hoverEnabledItems.end(), item) == m_hoverEnabledItems.end()) {
@@ -35,7 +35,6 @@ void Hover::removeHoverEnabledItem(CCMenuItemSpriteExtra* item) {
 void Hover::updateHover(CCPoint point) {
     CCPoint local;
     CCMenu* currentParent = nullptr;
-    LimitedCCMenu* currentLimitedCCMenu = nullptr;
     bool currentParentVisible  = false;
   
     for (CCMenuItemSpriteExtra* item : m_hoverEnabledItems) {
@@ -47,15 +46,9 @@ void Hover::updateHover(CCPoint point) {
             if (currentParentVisible) {
                 local = parent->convertToNodeSpace(point);
             }
-            currentLimitedCCMenu = typeinfo_cast<LimitedCCMenu*>(currentParent);
         }
         if (currentParentVisible && isNodeVisible(hoverItem)) {
-            if (currentLimitedCCMenu) {
-                hoverItem->hover(item, point, item->boundingBox().containsPoint(local) && currentLimitedCCMenu->testLocation(point));
-            }
-            else {
-                hoverItem->hover(item, point, item->boundingBox().containsPoint(local));
-            }
+            hoverItem->hover(item, point, item->boundingBox().containsPoint(local));
         }
     }
 }

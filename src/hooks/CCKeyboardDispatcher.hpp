@@ -2,6 +2,7 @@
 
 #include <Geode/Geode.hpp>
 #include <Geode/modify/CCKeyboardDispatcher.hpp>
+#include <alphalaneous.object_popup_api/include/ObjectSelectPopup.hpp>
 #include "EditorUI.hpp"
 
 using namespace geode::prelude;
@@ -12,7 +13,7 @@ class $modify(MyCCKeyboardDispatcher, CCKeyboardDispatcher) {
         auto ret = CCKeyboardDispatcher::dispatchKeyboardMSG(key, down, repeated);
         if (EditorUI* editorUI = EditorUI::get()) {
             MyEditorUI* myEditorUI = static_cast<MyEditorUI*>(editorUI);
-            if (!myEditorUI->m_fields->m_objectSelectPopup) {
+            if (!ObjectSelectPopup::get()) {
                 if (getAltKeyPressed() && down && !repeated) {
                     if (key == cocos2d::enumKeyCodes::KEY_Enter) {
                         myEditorUI->onCreativeMenu(nullptr);
