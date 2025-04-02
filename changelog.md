@@ -1,3 +1,6 @@
+# 1.2.8
+- iOS support
+
 # 1.2.7
 - Use Object Popup API
 - Better Object Groups Compatibility
