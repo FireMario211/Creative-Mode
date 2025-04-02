@@ -7,6 +7,8 @@
 
 using namespace geode::prelude;
 
+#ifdef GEODE_IS_DESKTOP
+
 class $modify(MyCCKeyboardDispatcher, CCKeyboardDispatcher) {
 
     bool dispatchKeyboardMSG(cocos2d::enumKeyCodes key, bool down, bool repeated) {
@@ -24,3 +26,5 @@ class $modify(MyCCKeyboardDispatcher, CCKeyboardDispatcher) {
         return ret;
     }
 };
+
+#endif
