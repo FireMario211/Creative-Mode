@@ -36,11 +36,19 @@ class $modify(MyEditorUI, EditorUI) {
 		CCNode* m_mainNode;
 		BlurNode* m_blur;
     	bool m_queueVisible = false;
+		Ref<CCSprite> m_highlightSprite;
+		Ref<CCSprite> m_backgroundSprite;
+		Ref<CCSprite> m_overlaySprite;
 	};
 
     bool init(LevelEditorLayer* editorLayer) {
-		if (!EditorUI::init(editorLayer)) return false;
 		auto fields = m_fields.self();
+
+		fields->m_backgroundSprite = CCSprite::create("rounded-slot.png"_spr);
+		fields->m_overlaySprite = CCSprite::create("rounded-slot-overlay.png"_spr);
+		fields->m_highlightSprite = CCSprite::create("rounded-slot-highlight.png"_spr);
+
+		if (!EditorUI::init(editorLayer)) return false;
 		ObjectNames::get();
     	Mod* mod = Mod::get();
 
@@ -340,6 +348,7 @@ class $modify(MyEditorUI, EditorUI) {
     CreateMenuItem* getCreateBtn(int id, int bg) {
 		auto ret = EditorUI::getCreateBtn(id, bg);
     	Mod* mod = Mod::get();
+		auto fields = m_fields.self();
         ret->setTag(ret->m_objectID);
 
         static_cast<HoverEnabledCCMenuItemSpriteExtra*>(static_cast<CCMenuItemSpriteExtra*>(ret))->enableHover(std::bind(&MyEditorUI::onBarObjectButtonHover, this, _1, _2, _3, _4));
@@ -372,8 +381,11 @@ class $modify(MyEditorUI, EditorUI) {
 
 				if (buttonSprite->getChildByID("slot-bg")) return ret;
 				
-				CCSprite* slotSprite = CCSprite::create("rounded-slot.png"_spr);
-				CCSprite* slotOverlay = CCSprite::create("rounded-slot-overlay.png"_spr);
+				CCSprite* slotSprite = CCSprite::createWithTexture(fields->m_backgroundSprite->getTexture());
+				CCSprite* slotOverlay = CCSprite::createWithTexture(fields->m_overlaySprite->getTexture());
+				CCSprite* highlight = CCSprite::createWithTexture(fields->m_highlightSprite->getTexture());
+				CCSprite* persistentHighlight = CCSprite::createWithTexture(fields->m_highlightSprite->getTexture());
+
 				slotSprite->setZOrder(-10);
 				slotSprite->setID("slot-bg");
 				slotOverlay->setZOrder(10);
@@ -383,13 +395,11 @@ class $modify(MyEditorUI, EditorUI) {
 				ccColor3B overlayColor = mod->getSettingValue<ccColor3B>("selection-color");
 				slotOverlay->setColor(overlayColor);
 
-				CCSprite* highlight = CCSprite::create("rounded-slot-highlight.png"_spr);
 				highlight->setVisible(false);
 				highlight->setID("highlight");
 				highlight->setZOrder(-11);
 				highlight->setOpacity(127);
 
-				CCSprite* persistentHighlight = CCSprite::create("rounded-slot-highlight.png"_spr);
 				persistentHighlight->setID("persistent-highlight");
 				persistentHighlight->setZOrder(-12);
 				persistentHighlight->setOpacity(127);

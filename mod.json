@@ -8,7 +8,7 @@
 	},
 	"id": "alphalaneous.creative_mode",
 	"name": "Creative Mode",
-	"version": "v1.2.8",
+	"version": "v1.2.9",
 	"developer": "Alphalaneous",
 	"description": "Gives the Build Tab a cool new interface",
 	"dependencies": [
@@ -19,7 +19,7 @@
         },
 		{
             "id": "alphalaneous.object_popup_api",
-            "version": ">=v1.0.0",
+            "version": ">=v1.0.2",
             "importance": "required"
         }
     ],
