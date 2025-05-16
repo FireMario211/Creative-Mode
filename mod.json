@@ -1,5 +1,5 @@
 {
-	"geode": "4.3.1",
+	"geode": "4.4.0",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -8,21 +8,13 @@
 	},
 	"id": "alphalaneous.creative_mode",
 	"name": "Creative Mode",
-	"version": "v1.2.9",
+	"version": "v1.2.10",
 	"developer": "Alphalaneous",
 	"description": "Gives the Build Tab a cool new interface",
-	"dependencies": [
-		{
-            "id": "geode.node-ids",
-            "version": ">=v1.13.2",
-            "importance": "required"
-        },
-		{
-            "id": "alphalaneous.object_popup_api",
-            "version": ">=v1.0.2",
-            "importance": "required"
-        }
-    ],
+	"dependencies": {
+        "geode.node-ids": ">=v1.13.2",
+        "alphalaneous.object_popup_api": ">=v1.0.2"
+    },
 	"resources": {
 		"sprites": [
 			"resources/*.png"
