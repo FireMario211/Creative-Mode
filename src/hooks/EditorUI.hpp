@@ -221,7 +221,7 @@ class $modify(MyEditorUI, EditorUI) {
 			changeBG(m_tabsMenu->getChildByTag(m_selectedTab), mod->getSettingValue<ccColor4B>("gradient-top-color").a, 255, 255 * mod->getSettingValue<float>("gradient-overlay-opacity"));
 		}
 
-		#ifdef GEODE_IS_WINDOWS
+		#if defined(GEODE_IS_WINDOWS) || defined(GEODE_IS_IOS)
 		queueInMainThread([this, fields, winSize, mod] {
 
 			int blurStrength = mod->getSettingValue<int>("blur-strength");
