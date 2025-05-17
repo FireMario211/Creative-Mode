@@ -33,13 +33,14 @@ RenderTexture::RenderTexture(unsigned int width, unsigned int height, GLint text
 		static_cast<GLsizei>(m_width),
 		static_cast<GLsizei>(m_height)
 	);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, 0x821A, GL_RENDERBUFFER, m_depthStencil);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, 0x8D00, GL_RENDERBUFFER, m_depthStencil);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, 0x8D20, GL_RENDERBUFFER, m_depthStencil);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_oldRBO);
 
 	// attach texture to framebuffer
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture, 0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_oldFBO);
-	glBindRenderbuffer(GL_RENDERBUFFER, m_oldRBO);
 }
 
 RenderTexture::RenderTexture(RenderTexture&& other) {
