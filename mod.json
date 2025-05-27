@@ -57,7 +57,7 @@
             "control": {
                 "slider": true
             },
-			"platforms": ["win", "ios"]
+			"platforms": ["win"]
 		},
 		"selection-color": {
             "name": "Selection Color",
