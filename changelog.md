@@ -1,4 +1,4 @@
-# 1.2.11
+# 1.2.10
 - Attempt to fix a crash
 
 # 1.2.9
