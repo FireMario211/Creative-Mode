@@ -292,7 +292,7 @@ class $modify(MyEditorUI, EditorUI) {
 		Mod* mod = Mod::get();
 		
 		// we actuually don't always know if the sender will even be a node ig
-		CCNode* node = typeinfo_cast<CCNode*>(sender)
+		CCNode* node = typeinfo_cast<CCNode*>(sender);
 		if (!node) return;
 
 		if (isStart && hovering) {
