@@ -1,3 +1,6 @@
+# 1.2.11
+- Attempt to fix a crash
+
 # 1.2.9
 - Performance Improvements
 
