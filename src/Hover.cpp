@@ -3,7 +3,7 @@
 #include <alphalaneous.object_popup_api/include/ObjectSelectPopup.hpp>
 
 void Hover::addHoverEnabledItem(CCMenuItemSpriteExtra* item) {
-    if(std::find(m_hoverEnabledItems.begin(), m_hoverEnabledItems.end(), item) == m_hoverEnabledItems.end()) {
+    if (std::find(m_hoverEnabledItems.begin(), m_hoverEnabledItems.end(), item) == m_hoverEnabledItems.end()) {
         m_hoverEnabledItems.push_back(item);
     }
 }

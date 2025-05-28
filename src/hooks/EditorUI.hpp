@@ -291,11 +291,17 @@ class $modify(MyEditorUI, EditorUI) {
 	void onBarObjectButtonHover(CCObject* sender, CCPoint point, bool hovering, bool isStart) {
 		Mod* mod = Mod::get();
 		
+		// we actuually don't always know if the sender will even be a node ig
+		CCNode* node = typeinfo_cast<CCNode*>(sender)
+		if (!node) return;
+
 		if (isStart && hovering) {
 			
 			if (mod->getSettingValue<bool>("enable-new-tab-ui")) {
-				if (ButtonSprite* buttonSprite = static_cast<CCNode*>(sender)->getChildByType<ButtonSprite*>(0)) {
-					buttonSprite->getChildByID("highlight")->setVisible(true);
+				if (ButtonSprite* buttonSprite = node->getChildByType<ButtonSprite*>(0)) {
+					if (CCNode* highlight = buttonSprite->getChildByID("highlight")) {
+						highlight->setVisible(true);
+					}
 				}
 			}
 
@@ -308,8 +314,8 @@ class $modify(MyEditorUI, EditorUI) {
 				name = ObjectNames::get()->nameForID(sender->getTag());
 			} 
 			else { // check for group name object
-				if (auto gnObj = static_cast<CCNode*>(sender)->getUserObject("razoom.object_groups/OG-name")) {
-					name = static_cast<CCString*>(gnObj)->m_sString;
+				if (auto gnObj = node->getUserObject("razoom.object_groups/OG-name")) {
+					name = static_cast<CCString*>(gnObj)->getCString();
 					if (name.empty()) name = "Unnamed";
 					isGroup = true;
 				}
@@ -317,11 +323,12 @@ class $modify(MyEditorUI, EditorUI) {
 			
 			if (mod->getSettingValue<bool>("enable-tooltips")) {
 				bool isObjectGroup = false;
-				if (CCNode* parent = static_cast<CCNode*>(sender)->getParent()) {
+				if (CCNode* parent = node->getParent()) {
 					if (CCNode* parent2 = parent->getParent()) {
 						isObjectGroup = parent2->getID() == "RaZooM";
 					}
 				}
+				
 				setTooltipText(name, sender->getTag(), isGroup);
 				if (!isObjectGroup) {
 					setTooltipVisible(true);
@@ -330,8 +337,10 @@ class $modify(MyEditorUI, EditorUI) {
 		}
 		if (isStart && !hovering) {
 			if (mod->getSettingValue<bool>("enable-new-tab-ui")) {
-				if (ButtonSprite* buttonSprite = static_cast<CCNode*>(sender)->getChildByType<ButtonSprite*>(0)) {
-					buttonSprite->getChildByID("highlight")->setVisible(false);
+				if (ButtonSprite* buttonSprite = node->getChildByType<ButtonSprite*>(0)) {
+					if (CCNode* highlight = buttonSprite->getChildByID("highlight")) {
+						highlight->setVisible(false);
+					}
 				}
 			}
 			if (mod->getSettingValue<bool>("enable-tooltips")) {
@@ -363,10 +372,8 @@ class $modify(MyEditorUI, EditorUI) {
 					for (CCNode* child : CCArrayExt<CCNode*>(buttonSprite->getChildren())) {
 						if (typeinfo_cast<CCSprite*>(child)) {
 							if (GameObject* obj = typeinfo_cast<GameObject*>(child)) {
-								obj->retain();
-								queueInMainThread([this, obj] {
+								queueInMainThread([this, obj = Ref(obj)] {
 									setColorRecursive(obj);
-									obj->release();
 								});
 								continue;
 							}
@@ -424,10 +431,7 @@ class $modify(MyEditorUI, EditorUI) {
 				persistentHighlight->setPositionY(persistentHighlight->getPositionY() + 2);
 				persistentHighlight->setScale(buttonSprite->getContentSize().width / persistentHighlight->getContentSize().width);
 
-				ret->retain();
-				buttonSprite->retain();
-				persistentHighlight->retain();
-				queueInMainThread([ret, buttonSprite, persistentHighlight] {
+				queueInMainThread([ret = Ref(ret), buttonSprite = Ref(buttonSprite), persistentHighlight = Ref(persistentHighlight)] {
 					if (ret->getUserObject("razoom.object_groups/OG-name")) {
 						// group marker since Object Groups v2
 						buttonSprite->addChild(persistentHighlight);
@@ -435,9 +439,6 @@ class $modify(MyEditorUI, EditorUI) {
 						// compat with Object Groups < v2
 						buttonSprite->addChild(persistentHighlight);
 					}
-					ret->release();
-					buttonSprite->release();
-					persistentHighlight->release();
 				});
 			}
 		}
@@ -581,7 +582,7 @@ class $modify(MyEditorUI, EditorUI) {
 
 	void setTooltipText(std::string text, int id, bool isGroup=false) {
 		auto fields = m_fields.self();
-		if (fields->m_tooltipText) {
+		if (fields->m_tooltipText && fields->m_tooltipObjID) {
 			if (!isGroup) {
 				if (id == 0) {
 					fields->m_tooltipText->setString("");
@@ -625,10 +626,8 @@ class $modify(MyEditorUI, EditorUI) {
 
 		if (!fields->m_queueVisible && visible) {
 			fields->m_queueVisible = true;
-			fields->m_tooltip->retain();
-			queueInMainThread([this, fields] {
-				fields->m_tooltip->setVisible(true);
-				fields->m_tooltip->release();
+			queueInMainThread([this, fields, tooltip = Ref(fields->m_tooltip)] {
+				tooltip->setVisible(true);
 				fields->m_queueVisible = false;
 			});
 		}
