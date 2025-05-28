@@ -223,7 +223,7 @@ class $modify(MyEditorUI, EditorUI) {
 
 		#ifdef GEODE_IS_WINDOWS
 		queueInMainThread([this, fields, winSize, mod] {
-
+			if (CCScene::get()->getChildByID("firee.object-workshop/objectworkshop")) return;
 			int blurStrength = mod->getSettingValue<int>("blur-strength");
 
 			if (blurStrength > 0) {
