@@ -38,6 +38,7 @@ void Hover::updateHover(CCPoint point) {
     bool currentParentVisible  = false;
   
     for (CCMenuItemSpriteExtra* item : m_hoverEnabledItems) {
+        if (!item) continue;
         HoverEnabledCCMenuItemSpriteExtra* hoverItem = static_cast<HoverEnabledCCMenuItemSpriteExtra*>(item);
         CCMenu* parent = static_cast<CCMenu*>(item->getParent());
         if (parent != currentParent) {
